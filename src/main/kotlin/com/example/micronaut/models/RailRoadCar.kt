@@ -1,0 +1,22 @@
+package com.example.micronaut.models
+
+import com.example.micronaut.entities.RailRoadCarEntity
+import io.micronaut.core.annotation.Introspected
+import javax.validation.constraints.NotBlank
+
+enum class Receiver {`UPS`,`FedEx`, `Old Dominion`}
+
+@Introspected
+data class RailRoadCar(
+    var name: String? = null,
+    @field:NotBlank var destination: String? = null,
+    @field:NotBlank var receiver: String? = null
+) {
+    companion object {
+        fun RailRoadCar.toRailRoadCarEntity() = RailRoadCarEntity(
+            name = name,
+            destination = destination,
+            receiver = receiver
+        )
+    }
+}

@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: railroadoperatios
+netty:
+  default:
+    allocator:
+      max-order: 3

@@ -1,0 +1,44 @@
+POST http://localhost:8080/railRoadCars
+Content-Type: application/json
+
+{"railRoadCar":  {
+  "name" : "Box Car 1",
+  "destination" : "Houston",
+  "receiver" : "FedEx"
+}}
+
+###
+GET http://localhost:8080/railRoadCars/list
+Accept: application/json
+
+###
+
+POST http://localhost:8080/railRoadCarDestinations
+Content-Type: application/json
+
+{"railRoadCarDestination":  {
+  "key" : "LA",
+  "value" : 3
+}}
+
+###
+GET http://localhost:8080/railRoadCarDestinations/list
+Accept: application/json
+
+###
+GET http://localhost:8080/railRoadCarReceivers/list
+Accept: application/json
+
+###
+POST http://localhost:8080/railRoadCarReceivers
+Content-Type: application/json
+
+{"railRoadCarReceiver":  {
+  "key" : "UPS",
+  "value" : 1
+}}
+
+
+###
+GET http://localhost:8080/railroadoperations/departList
+Accept: application/json
