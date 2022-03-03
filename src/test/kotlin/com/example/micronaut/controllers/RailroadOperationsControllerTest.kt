@@ -44,17 +44,17 @@ class RailroadOperationsControllerTest(private val embeddedServer: EmbeddedServe
 
     @Test
     fun getDepartListTest() {
-        val car1: RailRoadCar = RailRoadCar("Box Car 1", "Houston", "FedEx")
+        val car1: RailRoadCar = RailRoadCar(name="Box Car 1", destination = "Houston", receiver = "FedEx")
         railRoadCarsClient.save(car1)
-        val car2: RailRoadCar = RailRoadCar("Box Car 2", "Chicago", "FedEx")
+        val car2: RailRoadCar = RailRoadCar(name="Box Car 2", destination = "Chicago", receiver = "FedEx")
         railRoadCarsClient.save(car2)
-        val car3: RailRoadCar = RailRoadCar("Box Car 3", "Houston", "UPS")
+        val car3: RailRoadCar = RailRoadCar(name="Box Car 3", destination = "Houston", receiver = "UPS")
         railRoadCarsClient.save(car3)
-        val car4: RailRoadCar = RailRoadCar("Box Car 4", "LA", "Old Dominion")
+        val car4: RailRoadCar = RailRoadCar(name="Box Car 4", destination = "LA", receiver = "Old Dominion")
         railRoadCarsClient.save(car4)
-        val car5: RailRoadCar = RailRoadCar("Box Car 5", "LA", "FedEx")
+        val car5: RailRoadCar = RailRoadCar(name="Box Car 5", destination = "LA", receiver = "FedEx")
         railRoadCarsClient.save(car5)
-        val car6: RailRoadCar = RailRoadCar("Box Car 6", "Houston", "Old Dominion")
+        val car6: RailRoadCar = RailRoadCar(name="Box Car 6", destination = "Houston", receiver = "Old Dominion")
         railRoadCarsClient.save(car6)
 
 
@@ -62,11 +62,11 @@ class RailroadOperationsControllerTest(private val embeddedServer: EmbeddedServe
         val departList = railRoadOperationsClient.getDepartList()
         assertEquals(departList.code(), HttpStatus.OK.code)
         assertEquals(departList.body()?.toList()?.size,6)
-        assertEquals(departList.body()?.toList()?.get(0), car3)
-        assertEquals(departList.body()?.toList()?.get(1), car1)
-        assertEquals(departList.body()?.toList()?.get(2), car6)
-        assertEquals(departList.body()?.toList()?.get(3), car2)
-        assertEquals(departList.body()?.toList()?.get(4), car5)
-        assertEquals(departList.body()?.toList()?.get(5), car4)
+        assertEquals(departList.body()?.toList()?.get(0)?.name, car3.name)
+        assertEquals(departList.body()?.toList()?.get(1)?.name, car1.name)
+        assertEquals(departList.body()?.toList()?.get(2)?.name, car6.name)
+        assertEquals(departList.body()?.toList()?.get(3)?.name, car2.name)
+        assertEquals(departList.body()?.toList()?.get(4)?.name, car5.name)
+        assertEquals(departList.body()?.toList()?.get(5)?.name, car4.name)
     }
 }
