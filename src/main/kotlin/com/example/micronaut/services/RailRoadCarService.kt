@@ -1,6 +1,5 @@
 package com.example.micronaut.services
 
-import com.example.micronaut.entities.RailRoadCarEntity
 import com.example.micronaut.entities.RailRoadCarEntity.Companion.toRailRoadCar
 import com.example.micronaut.models.RailRoadCar
 import com.example.micronaut.models.RailRoadCar.Companion.toRailRoadCarEntity
@@ -24,7 +23,7 @@ class RailRoadCarService {
     }
 
     fun delete(id: String) {
-        railRoadCarRepository.delete(railRoadCarRepository.findById(id)?.get())
+        railRoadCarRepository.delete(id)
     }
 
     fun update(entity: RailRoadCar): RailRoadCar {

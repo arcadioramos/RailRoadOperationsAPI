@@ -11,7 +11,6 @@ import com.example.micronaut.repositories.RailRoadCarReceiverRepository
 import com.example.micronaut.repositories.RailRoadCarRepository
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
-import java.util.*
 
 @Singleton
 class RailRoadOperationsService {

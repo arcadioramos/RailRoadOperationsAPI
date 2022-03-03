@@ -1,9 +1,7 @@
 package com.example.micronaut.controllers
 
-import com.example.micronaut.models.RailRoadCar
 import com.example.micronaut.models.RailRoadCarReceiver
 import com.example.micronaut.services.RailRoadCarReceiverService
-import com.example.micronaut.services.RailRoadCarService
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.*
@@ -22,7 +20,7 @@ open class RailRoadCarsReceiverController {
 
     @Put
     open fun update(@Body @Valid railRoadCarReceiver: RailRoadCarReceiver): HttpResponse<RailRoadCarReceiver> {
-        return HttpResponse.ok( railRoadCarReceiverService.save(railRoadCarReceiver))
+        return HttpResponse.ok( railRoadCarReceiverService.update(railRoadCarReceiver))
     }
 
     @Get("/list")
@@ -30,7 +28,7 @@ open class RailRoadCarsReceiverController {
         railRoadCarReceiverService.findAll()
 
     @Post
-    open fun save(@Body("railRoadCarReceiver") @Valid railRoadCarReceiver: RailRoadCarReceiver) : HttpResponse<RailRoadCarReceiver> {
+    open fun save(@Body @Valid railRoadCarReceiver: RailRoadCarReceiver) : HttpResponse<RailRoadCarReceiver> {
         return HttpResponse.created( railRoadCarReceiverService.save(railRoadCarReceiver))
     }
 

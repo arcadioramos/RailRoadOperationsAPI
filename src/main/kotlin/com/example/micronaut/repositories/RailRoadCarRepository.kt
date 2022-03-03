@@ -1,19 +1,11 @@
 package com.example.micronaut.repositories
-import io.micronaut.data.repository.CrudRepository
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema
-import software.amazon.awssdk.regions.Region
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import com.example.micronaut.entities.RailRoadCarEntity
 import com.example.micronaut.helpers.PersistenceHelper
 import jakarta.inject.Singleton
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
-import software.amazon.awssdk.core.waiters.WaiterResponse
-import software.amazon.awssdk.enhanced.dynamodb.Key
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema
 import software.amazon.awssdk.services.dynamodb.model.*
-import java.net.URI
 import java.util.*
 
 @Singleton
@@ -32,9 +24,9 @@ class RailRoadCarRepository{
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
         return railRoadCarTable.scan().items()
     }
-    fun delete(entity: RailRoadCarEntity) {
+    fun delete(id : String) {
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
-        railRoadCarTable.deleteItem(entity)
+        railRoadCarTable.deleteItem(findById(id).get())
     }
 
     fun update(entity: RailRoadCarEntity): RailRoadCarEntity {

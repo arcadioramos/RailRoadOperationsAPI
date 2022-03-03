@@ -24,11 +24,16 @@ class RailRoadCarDestinationService {
     }
 
     fun delete(id: String) {
-        railRoadCarDestinationRepository.delete(RailRoadCarDestinationEntity(id, 0))
+        railRoadCarDestinationRepository.delete(id)
     }
 
     fun save(entity: RailRoadCarDestination): RailRoadCarDestination {
+        entity.id = UUID.randomUUID().toString()
         return railRoadCarDestinationRepository.save(entity.toRailRoadCarDestinationEntity()).toRailRoadCarDestination()
+    }
+
+    fun update(entity: RailRoadCarDestination): RailRoadCarDestination {
+        return railRoadCarDestinationRepository.update(entity.toRailRoadCarDestinationEntity()).toRailRoadCarDestination()
     }
 
     fun findAll(): List<RailRoadCarDestination> {

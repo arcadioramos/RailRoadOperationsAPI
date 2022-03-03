@@ -1,24 +1,21 @@
 package com.example.micronaut.repositories
 
-import com.example.micronaut.entities.RailRoadCarDestinationEntity
 import com.example.micronaut.helpers.PersistenceHelper
 import com.example.micronaut.models.CatalogElement
 import jakarta.inject.Singleton
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
-import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema
-import software.amazon.awssdk.enhanced.dynamodb.internal.conditional.EqualToConditional
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional
-import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest
 import software.amazon.awssdk.services.dynamodb.model.*
-import java.util.HashMap
-import javax.xml.catalog.CatalogException
+import java.util.*
 
 @Singleton
 open class RailRoadCarCatalogRepository() {
     fun createNewTable(): String? {
         val tableName = "RailRoadCarCatalog"
+        val  attDefId = AttributeDefinition.builder()
+            .attributeName("id")
+            .attributeType(ScalarAttributeType.S).build()
         val  attDefKey = AttributeDefinition.builder()
             .attributeName("key")
             .attributeType(ScalarAttributeType.S).build()
@@ -28,19 +25,20 @@ open class RailRoadCarCatalogRepository() {
         val  attDefType = AttributeDefinition.builder()
             .attributeName("type")
             .attributeType(ScalarAttributeType.S).build()
-        var attributeDefinitionList= mutableListOf<AttributeDefinition>(attDefKey, attDefValue, attDefType)
+        var attributeDefinitionList= mutableListOf<AttributeDefinition>(attDefId,
+            attDefKey, attDefValue, attDefType)
 
 
 
-        val keySchemaKeyVal =  KeySchemaElement.builder()
-            .attributeName("key")
+        val keySchemaId =  KeySchemaElement.builder()
+            .attributeName("id")
             .keyType(KeyType.HASH)
             .build()
-        val keySchemaValueVal =  KeySchemaElement.builder()
-            .attributeName("value")
+        val keySchemaKey =  KeySchemaElement.builder()
+            .attributeName("key")
             .keyType(KeyType.RANGE)
             .build()
-        var keySchemaValList= mutableListOf<KeySchemaElement>(keySchemaKeyVal, keySchemaValueVal)
+        var keySchemaList= mutableListOf<KeySchemaElement>(keySchemaId, keySchemaKey)
 
 
         val provisionedVal =  ProvisionedThroughput.builder()
@@ -49,29 +47,42 @@ open class RailRoadCarCatalogRepository() {
             .build()
 
 
-        var keySchemaName = KeySchemaElement.builder()
-            .attributeName("key")
+        var keySecondarySchemaId = KeySchemaElement.builder()
+            .attributeName("id")
             .keyType(KeyType.HASH)
             .build()
-
-        var keySchemaType = KeySchemaElement.builder()
+        var keySecondarySchemaType = KeySchemaElement.builder()
             .attributeName("type")
             .keyType(KeyType.RANGE)
             .build()
+        var keySecondarySchemaValue = KeySchemaElement.builder()
+            .attributeName("value")
+            .keyType(KeyType.RANGE)
+            .build()
 
-        val keySchemaList = mutableListOf<KeySchemaElement>(keySchemaName, keySchemaType)
-        val secondaryIndex = LocalSecondaryIndex.builder()
-            .indexName("secondaryIdx")
-            .keySchema(keySchemaList)
+        val keySecondarySchemaTypeList = mutableListOf<KeySchemaElement>(keySecondarySchemaId, keySecondarySchemaType)
+        val secondaryIndexType = LocalSecondaryIndex.builder()
+            .indexName("secondaryIdxType")
+            .keySchema(keySecondarySchemaTypeList)
             .projection(Projection.builder()
                 .projectionType(ProjectionType.ALL)
                 .build())
             .build()
 
-        val localSecondaryIndexList = mutableListOf<LocalSecondaryIndex>(secondaryIndex)
+        val keySecondarySchemaValueList = mutableListOf<KeySchemaElement>(keySecondarySchemaId, keySecondarySchemaValue)
+        val secondaryIndexValue = LocalSecondaryIndex.builder()
+            .indexName("secondaryIdxValue")
+            .keySchema(keySecondarySchemaValueList)
+            .projection(Projection.builder()
+                .projectionType(ProjectionType.ALL)
+                .build())
+            .build()
+
+        val localSecondaryIndexList = mutableListOf<LocalSecondaryIndex>(secondaryIndexType,secondaryIndexValue)
+
 
         val request = CreateTableRequest.builder()
-            .keySchema(keySchemaValList)
+            .keySchema(keySchemaList)
             .attributeDefinitions(attributeDefinitionList)
             .localSecondaryIndexes(localSecondaryIndexList)
             .provisionedThroughput(provisionedVal)
@@ -79,6 +90,11 @@ open class RailRoadCarCatalogRepository() {
             .build()
 
         return PersistenceHelper.createTable(tableName, PersistenceHelper.dynamoDbClient(), request)
+    }
+
+    fun <T: CatalogElement> findAllById(id: String, entity: Class<T>): Optional<T> {
+        val railRoadCarDestinationTable: DynamoDbTable<T> = dynamoDbTable(entity)
+        return railRoadCarDestinationTable.scan().items().stream().filter { x -> x.id.equals(id) }.findFirst()
     }
 
     fun <T: CatalogElement> findAllByType(type: String, entity: Class<T>): MutableIterable<T> {
