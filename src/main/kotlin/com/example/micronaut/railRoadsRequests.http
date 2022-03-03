@@ -16,10 +16,23 @@ Accept: application/json
 POST http://localhost:8080/railRoadCarDestinations
 Content-Type: application/json
 
-{"railRoadCarDestination":  {
+{
+  "key" : "LA",
+  "value" : 4
+}
+
+###
+PUT http://localhost:8080/railRoadCarDestinations
+Content-Type: application/json
+
+{
+  "id": "618bedd8-67d6-4c21-a6ce-6b04160b880f",
   "key" : "LA",
   "value" : 3
-}}
+}
+
+###
+DELETE http://localhost:8080/railRoadCarDestinations/b577cc3a-b301-4157-a342-0514dba5af79
 
 ###
 GET http://localhost:8080/railRoadCarDestinations/list
@@ -33,10 +46,24 @@ Accept: application/json
 POST http://localhost:8080/railRoadCarReceivers
 Content-Type: application/json
 
-{"railRoadCarReceiver":  {
-  "key" : "UPS",
-  "value" : 1
-}}
+{
+  "key" : "Old Dominion",
+  "value" : 3
+}
+
+###
+PUT http://localhost:8080/railRoadCarReceivers
+Content-Type: application/json
+
+{
+  "id": "21a37c53-c68a-4af2-80bb-039b76108967",
+  "key" : "Old Dominion",
+  "value" : 3
+}
+
+###
+DELETE http://localhost:8080/railRoadCarReceivers/f14cecf8-4ec6-41cb-9585-f7149d34d867
+
 
 ###
 DELETE http://localhost:8080/railRoadCars/6b458cee-8aad-415a-a1e7-feee0553b45d
