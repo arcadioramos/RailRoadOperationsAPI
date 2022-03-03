@@ -14,8 +14,8 @@ class RailRoadCarService {
     @Inject
     lateinit var railRoadCarRepository: RailRoadCarRepository
 
-    fun findByName(name: String): Optional<RailRoadCar> {
-        val result =  railRoadCarRepository.findByName(name)
+    fun findById(id: String): Optional<RailRoadCar> {
+        val result =  railRoadCarRepository.findById(id)
         if(result.isPresent) {
             return Optional.of(result.get().toRailRoadCar())
         } else {
@@ -23,11 +23,15 @@ class RailRoadCarService {
         }
     }
 
-    fun delete(name: String) {
-        railRoadCarRepository.delete(RailRoadCarEntity(name, null, null))
+    fun delete(id: String) {
+        railRoadCarRepository.delete(railRoadCarRepository.findById(id)?.get())
     }
 
+    fun update(entity: RailRoadCar): RailRoadCar {
+        return railRoadCarRepository.update(entity.toRailRoadCarEntity()).toRailRoadCar()
+    }
     fun save(entity: RailRoadCar): RailRoadCar {
+        entity.id = UUID.randomUUID().toString()
         return railRoadCarRepository.save(entity.toRailRoadCarEntity()).toRailRoadCar()
     }
 

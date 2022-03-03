@@ -14,13 +14,13 @@ open class RailRoadCarsController {
     @Inject
     lateinit var railRoadCarService: RailRoadCarService
 
-    @Get("/{name}")
-    fun getRailRoadCar(name: String): Optional<RailRoadCar> =
-        railRoadCarService.findByName(name)
+    @Get("/{id}")
+    fun getRailRoadCar(id: String): Optional<RailRoadCar> =
+        railRoadCarService.findById(id)
 
-    @Put
+    @Put()
     open fun update(@Body @Valid railRoadCar: RailRoadCar): HttpResponse<RailRoadCar> {
-        return HttpResponse.ok( railRoadCarService.save(railRoadCar))
+        return HttpResponse.ok( railRoadCarService.update(railRoadCar))
     }
 
     @Get("/list")
@@ -32,8 +32,8 @@ open class RailRoadCarsController {
         return HttpResponse.created( railRoadCarService.save(railRoadCar))
     }
 
-    @Delete("/{name}")
+    @Delete("/{id}")
     @Status(HttpStatus.NO_CONTENT)
-    fun delete(name: String) = railRoadCarService.delete(name)
+    fun delete(id: String) = railRoadCarService.delete(id)
 
 }
