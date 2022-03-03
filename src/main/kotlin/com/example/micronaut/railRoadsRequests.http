@@ -1,11 +1,11 @@
 POST http://localhost:8080/railRoadCars
 Content-Type: application/json
 
-{"railRoadCar":  {
+{
   "name" : "Box Car 1",
   "destination" : "Houston",
   "receiver" : "FedEx"
-}}
+}
 
 ###
 GET http://localhost:8080/railRoadCars/list
@@ -37,6 +37,20 @@ Content-Type: application/json
   "key" : "UPS",
   "value" : 1
 }}
+
+###
+DELETE http://localhost:8080/railRoadCars/6b458cee-8aad-415a-a1e7-feee0553b45d
+
+###
+PUT http://localhost:8080/railRoadCars
+Content-Type: application/json
+
+{
+  "id" : "a6c9d4b2-e754-4455-b43f-2c3c6431a510",
+  "name" : "Box Car 1",
+  "destination" : "Houston",
+  "receiver" : "FedEx"
+}
 
 
 ###

@@ -15,12 +15,19 @@ import software.amazon.awssdk.enhanced.dynamodb.Key
 import software.amazon.awssdk.services.dynamodb.model.*
 import java.net.URI
 import java.util.*
+
 @Singleton
 class RailRoadCarRepository{
+    fun findById(id: String): Optional<RailRoadCarEntity> {
+        val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
+        return Optional.of(railRoadCarTable.scan().items().filter{ x -> x.id.equals(id) }.toList().first())
+    }
+
     fun findByName(name: String): Optional<RailRoadCarEntity> {
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
         return Optional.of(railRoadCarTable.scan().items().filter{ x -> x.name.equals(name) }.toList().first())
     }
+
      fun findAll(): MutableIterable<RailRoadCarEntity> {
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
         return railRoadCarTable.scan().items()
@@ -29,6 +36,13 @@ class RailRoadCarRepository{
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
         railRoadCarTable.deleteItem(entity)
     }
+
+    fun update(entity: RailRoadCarEntity): RailRoadCarEntity {
+        val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
+        railRoadCarTable.updateItem(entity)
+        return entity;
+    }
+
     fun save(entity: RailRoadCarEntity): RailRoadCarEntity {
         val railRoadCarTable: DynamoDbTable<RailRoadCarEntity> = dynamoDbTable()
         railRoadCarTable.putItem(entity)
@@ -44,6 +58,9 @@ class RailRoadCarRepository{
     }
     fun createNewTable(): String? {
         val tableName = "RailRoadCar"
+        val  attDefId = AttributeDefinition.builder()
+            .attributeName("id")
+            .attributeType(ScalarAttributeType.S).build()
         val  attDefName = AttributeDefinition.builder()
             .attributeName("name")
             .attributeType(ScalarAttributeType.S).build()
@@ -53,39 +70,55 @@ class RailRoadCarRepository{
         val  attDefReceiver = AttributeDefinition.builder()
             .attributeName("receiver")
             .attributeType(ScalarAttributeType.S).build()
-        var attributeDefinitionList= mutableListOf<AttributeDefinition>(attDefName, attDefDestination, attDefReceiver)
-        val keySchemaNameVal =  KeySchemaElement.builder()
-            .attributeName("name")
+        var attributeDefinitionList= mutableListOf<AttributeDefinition>(attDefId,
+                         attDefName, attDefDestination, attDefReceiver)
+        val keySchemaName =  KeySchemaElement.builder()
+            .attributeName("id")
             .keyType(KeyType.HASH)
             .build()
-        val keySchemaDestinationVal =  KeySchemaElement.builder()
-            .attributeName("destination")
+       val keySchemaDestination =  KeySchemaElement.builder()
+            .attributeName("name")
             .keyType(KeyType.RANGE)
             .build()
-        var keySchemaValList= mutableListOf<KeySchemaElement>(keySchemaNameVal, keySchemaDestinationVal)
+        var keySchemaList= mutableListOf<KeySchemaElement>(keySchemaName, keySchemaDestination)
         val provisionedVal =  ProvisionedThroughput.builder()
             .readCapacityUnits(10)
             .writeCapacityUnits(10)
             .build()
-        var keySchemaName = KeySchemaElement.builder()
-            .attributeName("name")
+        var keySecondarySchemaId = KeySchemaElement.builder()
+            .attributeName("id")
             .keyType(KeyType.HASH)
             .build()
-        var keySchemaReceiver = KeySchemaElement.builder()
+        var keySecondarySchemaReceiver = KeySchemaElement.builder()
             .attributeName("receiver")
             .keyType(KeyType.RANGE)
             .build()
-        val keySchemaList = mutableListOf<KeySchemaElement>(keySchemaName, keySchemaReceiver)
-        val secondaryIndex = LocalSecondaryIndex.builder()
-            .indexName("secondaryIdx")
-            .keySchema(keySchemaList)
+        var keySecondarySchemaDestination = KeySchemaElement.builder()
+            .attributeName("destination")
+            .keyType(KeyType.RANGE)
+            .build()
+        val keySecondarySchemaReceiverList = mutableListOf<KeySchemaElement>(keySecondarySchemaId,
+            keySecondarySchemaReceiver)
+        val secondaryReceiverIndex = LocalSecondaryIndex.builder()
+            .indexName("secondaryReceiverIdx")
+            .keySchema(keySecondarySchemaReceiverList)
             .projection(Projection.builder()
                 .projectionType(ProjectionType.ALL)
                 .build())
             .build()
-        val localSecondaryIndexList = mutableListOf<LocalSecondaryIndex>(secondaryIndex)
+        val keySecondarySchemaDestinationList = mutableListOf<KeySchemaElement>(keySecondarySchemaId,
+            keySecondarySchemaDestination)
+        val secondaryDestinationIndex = LocalSecondaryIndex.builder()
+            .indexName("secondaryDestinationIdx")
+            .keySchema(keySecondarySchemaDestinationList)
+            .projection(Projection.builder()
+                .projectionType(ProjectionType.ALL)
+                .build())
+            .build()
+
+        val localSecondaryIndexList = mutableListOf<LocalSecondaryIndex>(secondaryReceiverIndex, secondaryDestinationIndex)
         val request = CreateTableRequest.builder()
-            .keySchema(keySchemaValList)
+            .keySchema(keySchemaList)
             .attributeDefinitions(attributeDefinitionList)
             .localSecondaryIndexes(localSecondaryIndexList)
             .provisionedThroughput(provisionedVal)
